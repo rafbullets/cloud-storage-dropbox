@@ -14,6 +14,8 @@ import specification.storage.StorageOperations;
 
 import java.io.*;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
@@ -27,11 +29,15 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     private static final String ACCESS_TOKEN = "7DVVktURjwAAAAAAAAAACjDTkt7EKyq_PW7AxXAZcsdSF5It6NliI75vHKzRrHxD";
     private DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial");
     private DbxClientV2 client = new DbxClientV2(config, ACCESS_TOKEN);
+    private String root;
+    private List<String> forbiddenExtensions;
 
-    public FolderWrapper listFolder(String path, String folderName) throws Exception {
+    public FolderWrapper listFolder(String path, String folderName) throws Exception
+    {
         List<FolderResult> folderResult = new ArrayList<>();
         if(!path.isEmpty()) path = addSlashes(path) + folderName;
         else path = addSlashes(folderName);
+        path = Paths.get(root, path).toString();
         System.out.println(path);
         ListFolderResult result = client.files().listFolder(path);
         String folderMetadata = "";
@@ -40,6 +46,7 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
             for (Metadata metadata : result.getEntries()) {
                 if(folderMetadata.isEmpty() && metadata.getName().equals(folderMetadataName)) {
                     System.out.println("imam metu");
+                    System.out.println(path + "/" + folderMetadataName);
                     folderMetadata = this.downloadMetadata(path + "/" + folderMetadataName);
                     continue;
                 }
@@ -69,13 +76,19 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
 
     @Override
     public void init(String pathToRoot, List<String> forbiddenExtensions) {
-
+        this.root = addSlashes(pathToRoot);
+        this.forbiddenExtensions = forbiddenExtensions;
     }
 
     @Override
     public void uploadFile(File file, String onPath, String fileName) throws IOException, Exception {
+        if(invalidExtension(fileName)) {
+            System.out.println("File contains illegal extension");
+            return;
+        }
         String path = addSlashes(onPath);
         path = path + fileName;
+        path = Paths.get(root, path).toString();
         System.out.println(path);
         InputStream in = new FileInputStream(file);
         client.files().uploadBuilder(path).uploadAndFinish(in);
@@ -84,8 +97,13 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
 
     @Override
     public void uploadFile(FileWrapper file) throws IOException, Exception {
+        if(invalidExtension(file.getName())) {
+            System.out.println("File contains illegal extension");
+            return;
+        }
         InputStream stream = new ByteArrayInputStream(file.getMetadata().getBytes());
         String path = getFileMetadataPath(file.getPath(), file.getName());
+        path = Paths.get(root, path).toString();
         System.out.println(path);
         client.files().uploadBuilder(path).uploadAndFinish(stream);
 
@@ -126,6 +144,7 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     public FileWrapper downloadFile(String pathToFile, String fileName, String localPath) throws IOException, Exception
     {
         String path = this.buildDbxFilePath(pathToFile, fileName);
+        path = Paths.get(root, path).toString();
         DbxDownloader<FileMetadata> downloader = client.files().download(path);
         FileOutputStream out = new FileOutputStream(localPath);
         downloader.download(out);
@@ -136,11 +155,29 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     }
 
     @Override
+    public void createFolder(String location, String name) throws Exception {
+        String path = this.buildDbxFilePath(location, name);
+        path = Paths.get(root, path).toString();
+        client.files().createFolderV2(path);
+    }
+
+    @Override
+    public void createFolder(String location, String name, String metadata) throws Exception {
+        this.createFolder(location, name);
+        System.out.println(this.getFolderMetadataPath(location, name));
+        InputStream stream = new ByteArrayInputStream(metadata.getBytes());
+        String path = this.getFolderMetadataPath(location, name);
+        path = Paths.get(root, path).toString();
+        client.files().uploadBuilder(path).uploadAndFinish(stream);
+    }
+
+    @Override
     public void delete(String path, String name) throws Exception {
 
     }
 
     private String downloadMetadata(String path) throws IOException {
+        path = Paths.get(root, path).toString();
         String meta = "";
         try {
             DbxDownloader<FileMetadata> metaDownloader = client.files().download(path);
@@ -170,9 +207,15 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     }
 
     private String addSlashes(String path) {
+        if(path.isEmpty()) return path;
         if(!path.startsWith("/")) path = "/" + path;
         if(!path.endsWith("/")) path = path + "/";
         return path;
+    }
+
+    private boolean invalidExtension(String fileName)
+    {
+        return this.forbiddenExtensions.contains(fileName.substring(fileName.lastIndexOf(".")+ 1));
     }
 
 
@@ -183,22 +226,7 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
             while ((length = inputStream.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-
             return result.toString();
         }
-    }
-
-
-    public void createFolder(String location, String name) throws Exception {
-        String path = this.buildDbxFilePath(location, name);
-        client.files().createFolderV2(path);
-    }
-
-    @Override
-    public void createFolder(String location, String name, String metadata) throws Exception {
-        this.createFolder(location, name);
-        System.out.println(this.getFolderMetadataPath(location, name));
-        InputStream stream = new ByteArrayInputStream(metadata.getBytes());
-        client.files().uploadBuilder(this.getFolderMetadataPath(location, name)).uploadAndFinish(stream);
     }
 }
