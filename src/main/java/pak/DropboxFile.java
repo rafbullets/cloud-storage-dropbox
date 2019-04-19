@@ -30,7 +30,7 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     private static final String ACCESS_TOKEN = "7DVVktURjwAAAAAAAAAACjDTkt7EKyq_PW7AxXAZcsdSF5It6NliI75vHKzRrHxD";
     private DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial");
     private DbxClientV2 client = new DbxClientV2(config, ACCESS_TOKEN);
-    private String root;
+    private String root = "";
     private List<String> forbiddenExtensions;
 
     public FolderWrapper listFolder(String path, String folderName) throws Exception
