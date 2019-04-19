@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class DropboxFile implements CommonOperations, FileBasicOperations, FolderBasicOperations,
-                                FileArchiveOperations, StorageOperations, Mapper
+                                FileArchiveOperations, StorageOperations
 {
     private static final String ACCESS_TOKEN = "7DVVktURjwAAAAAAAAAACjDTkt7EKyq_PW7AxXAZcsdSF5It6NliI75vHKzRrHxD";
     private DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial");
@@ -230,10 +230,5 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
             }
             return result.toString();
         }
-    }
-
-    @Override
-    public Class<? extends Base> map() {
-        return this.getClass();
     }
 }
