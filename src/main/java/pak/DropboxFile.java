@@ -206,11 +206,13 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
 
     private String downloadMetadata(String path) throws IOException {
         path = Paths.get(root, path).toString();
+        System.out.println("Path " + path);
         String meta = "";
         try {
             DbxDownloader<FileMetadata> metaDownloader = client.files().download(path);
             meta = this.inputStreamToString(metaDownloader.getInputStream());
         } catch (DownloadErrorException e) {
+            e.printStackTrace();
             // TODO check if it is path : not_found
         } catch (DbxException e) {
             e.printStackTrace();
