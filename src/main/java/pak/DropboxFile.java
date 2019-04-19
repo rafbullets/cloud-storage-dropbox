@@ -205,7 +205,7 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     }
 
     private String downloadMetadata(String path) throws IOException {
-        path = Paths.get(root, path).toString();
+//        path = Paths.get(root, path).toString();
         System.out.println("Path " + path);
         String meta = "";
         try {
