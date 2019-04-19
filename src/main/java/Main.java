@@ -1,6 +1,7 @@
 import specification.model.FileWrapper;
 import specification.model.FolderResult;
 import specification.model.FolderWrapper;
+import specification.storage.StorageOperations;
 
 import java.io.*;
 import java.nio.file.Path;
