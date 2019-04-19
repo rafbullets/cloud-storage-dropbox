@@ -4,23 +4,20 @@ import specification.model.FolderWrapper;
 import specification.storage.StorageOperations;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+//    public static void main(String[] args) throws Exception {
 ////
         pak.DropboxFile d = new pak.DropboxFile();
-        d.updateMetadata("noviFolder1/multi1", "folderce", "bbbb");
-////        List<String> a = new ArrayList<>();
-////        a.add("csv");
-////        d.init("init2/a/", a);
-//////        d.createFolder("noviFolder1/multi1", "folderce", "{upload: 'noviFolder'}");
-//////        d.createFolder("/foldercic", "foldercici");
-////        d.uploadFile(new File("output43.csv"), "/noviFolder1", "output43.csv" );
+//        d.updateMetadata("noviFolder1/multi1", "folderce", "bbbb");
+        List<String> a = new ArrayList<>();
+//        a.add("csv");
+//        d.init("init", a);
+////////        d.createFolder("noviFolder1/multi1", "folderce", "{upload: 'noviFolder'}");
+////////        d.createFolder("/foldercic", "foldercici");
+//        d.uploadFile(new File("output43.csv"), "/noviFolder1", "output43.pdf" );
 //////        d.uploadFile(new FileWrapper(new File("output.csv"),
 //////                "Tokilo car .csv", "out.csv", "/noviFolder1"));
 //////        List<FileWrapper> files = new ArrayList<>();
@@ -35,5 +32,5 @@ public class Main {
 //////        for (FolderResult a: l.getFolderResults()) {
 //////            System.out.println(a);
 //////        }
-    }
+//    }
 }
