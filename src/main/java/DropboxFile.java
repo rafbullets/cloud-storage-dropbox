@@ -3,8 +3,6 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
-import specification.Base;
-import specification.Mapper;
 import specification.model.FileWrapper;
 import specification.model.FolderResult;
 import specification.model.FolderWrapper;
@@ -16,7 +14,6 @@ import specification.storage.StorageOperations;
 
 import java.io.*;
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
