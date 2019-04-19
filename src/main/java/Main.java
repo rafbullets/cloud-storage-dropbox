@@ -11,9 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-//    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 ////
-//        pak.DropboxFile d = new pak.DropboxFile();
+        pak.DropboxFile d = new pak.DropboxFile();
+        d.updateMetadata("noviFolder1/multi1", "folderce", "bbbb");
 ////        List<String> a = new ArrayList<>();
 ////        a.add("csv");
 ////        d.init("init2/a/", a);
@@ -34,5 +35,5 @@ public class Main {
 //////        for (FolderResult a: l.getFolderResults()) {
 //////            System.out.println(a);
 //////        }
-//    }
+    }
 }

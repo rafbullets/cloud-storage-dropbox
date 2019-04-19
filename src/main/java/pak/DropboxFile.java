@@ -16,6 +16,7 @@ import specification.storage.StorageOperations;
 
 import java.io.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,32 @@ public class DropboxFile implements CommonOperations, FileBasicOperations, Folde
     public void uploadAsZipFile(List<File> files, String path, String zipFileName, String meta)
     {
 
+    }
+
+    public void updateMetadata(String path, String name, String metadata)
+    {
+        if(!path.isEmpty()) path = addSlashes(path) + name;
+        else path = addSlashes(name);
+        System.out.println(path);
+//        path = Paths.get(root, path).toString();
+        System.out.println(Paths.get(root, path , "._" + name + ".txt").toString());
+//        System.out.println(Paths.get(path,  "/._" + ));
+        path = Paths.get(root, path , "._" + name + ".txt").toString();
+        try {
+            client.files().delete(path);
+        } catch (DbxException e) {
+//            e.printStackTrace();
+        }
+
+        InputStream stream = new ByteArrayInputStream(metadata.getBytes());
+
+        try {
+            client.files().uploadBuilder(path).uploadAndFinish(stream);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
